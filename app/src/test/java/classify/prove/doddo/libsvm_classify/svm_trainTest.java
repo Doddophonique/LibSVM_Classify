@@ -23,6 +23,7 @@ public class svm_trainTest extends TestCase {
     static int l = 0, f = 0;
     // svm_problem needed by svm_train
     static svm_problem svmProblem = new svm_problem();
+    static svm_parameter svmParameter = new svm_parameter();
 
     public void setUp() throws Exception {
         super.setUp();
@@ -74,6 +75,24 @@ public class svm_trainTest extends TestCase {
 
         populateArray(bufferedReader);
 
+        svmParameter.svm_type = 0;
+        svmParameter.kernel_type = 2;
+        svmParameter.degree = 3;
+        svmParameter.gamma = 1.0/f;
+        svmParameter.coef0 = 0;
+
+        // For training only
+        svmParameter.cache_size = 100;
+        svmParameter.eps = 0.001;
+        svmParameter.C = 1;
+        svmParameter.nr_weight = 0;
+        svmParameter.nu = 0.5;
+        svmParameter.p = 0.1;
+        svmParameter.shrinking = 1;
+        svmParameter.probability = 0;
+
+        svm_model svmModel = svm.svm_train(svmProblem, svmParameter);
+        svm.svm_save_model("/home/doddo/Desktop/model.model", svmModel);
 
         Assert.assertTrue(true);
     }
