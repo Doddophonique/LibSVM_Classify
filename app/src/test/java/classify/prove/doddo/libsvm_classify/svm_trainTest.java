@@ -24,6 +24,7 @@ public class svm_trainTest extends TestCase {
     // svm_problem needed by svm_train
     static svm_problem svmProblem = new svm_problem();
     static svm_parameter svmParameter = new svm_parameter();
+    static double[] results;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -60,6 +61,9 @@ public class svm_trainTest extends TestCase {
         fileInputStream.getChannel().position(0);
         bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
+        double[] b = new double[l];
+        double[] a = new double[l];
+        results = new double[l];
         // number of rows of features
         svmProblem.l = l;
         // labels for each row
@@ -78,49 +82,70 @@ public class svm_trainTest extends TestCase {
         svmParameter.svm_type = 0;
         svmParameter.kernel_type = 2;
         svmParameter.degree = 3;
-        svmParameter.gamma = 1.0/f;
+        svmParameter.gamma = 0.0001220703125;
         svmParameter.coef0 = 0;
 
         // For training only
         svmParameter.cache_size = 100;
         svmParameter.eps = 0.001;
-        svmParameter.C = 1;
+        svmParameter.C = 2048;
         svmParameter.nr_weight = 0;
         svmParameter.nu = 0.5;
         svmParameter.p = 0.1;
         svmParameter.shrinking = 1;
         svmParameter.probability = 0;
 
+
         svm_model svmModel = svm.svm_train(svmProblem, svmParameter);
         svm.svm_save_model("/home/doddo/Desktop/model.model", svmModel);
+
+        for(int i = 0; i < l; i++)
+        {
+            results[i] = svm.svm_predict_values(svmModel, svmProblem.x[i], b);
+            a[i] = results[i] * svmProblem.y[i];
+        }
+        int positive = 0;
+        for(int i = 0; i < l; i++)
+        {
+            if(a[i] > 0)
+                positive++;
+        }
+        double perc;
+        perc = (double) positive / a.length;
 
         Assert.assertTrue(true);
     }
 
     private void populateArray(BufferedReader bufferedReader) throws Exception {
-        for (int C = 0; C < l; C++) {
-            int i = 0;
-            int pos = 0;
-            String line = bufferedReader.readLine();
+        try {
+            for (int C = 0; C < l; C++) {
+                int i = 0;
+                int pos = 0;
+                String line = bufferedReader.readLine();
 
-            if (line.charAt(0) == '+' || line.charAt(0) == '-') {
-                svmProblem.y[C] = (Double.valueOf(line.substring(0, 2)));
-            } else {
-                svmProblem.y[C] = ((double) line.charAt(0));
-            }
+                if (line.charAt(0) == '+' || line.charAt(0) == '-') {
+                    svmProblem.y[C] = (Double.valueOf(line.substring(0, 2)));
+                } else {
+                    svmProblem.y[C] = Double.valueOf(line.substring(0, 1));
+                }
 
-            int index = 1;
-            for (i = 0; i < f; i++ ) {
-                pos = line.indexOf(':');
-                //if (pos == -1)
-                //    break;
-                line = line.substring(pos + 1);
-                svmProblem.x[C][i].index = i + 1;
-                svmProblem.x[C][i].value = Double.valueOf(line.substring(0, line.indexOf(' ')));
-                index++;
+                int index = 1;
+                for (i = 0; i < f; i++) {
+                    pos = line.indexOf(':');
+                    //if (pos == -1)
+                    //    break;
+                    line = line.substring(pos + 1);
+                    svmProblem.x[C][i].index = i + 1;
+                    svmProblem.x[C][i].value = Double.valueOf(line.substring(0, line.indexOf(' ')));
+                    index++;
+                }
+                svmProblem.x[C][i].index = -1;
+                svmProblem.x[C][i].value = .0;
             }
-            svmProblem.x[C][i].index = -1;
-            svmProblem.x[C][i].value = .0;
+        }
+        catch(Exception ew)
+        {
+
         }
     }
 }
