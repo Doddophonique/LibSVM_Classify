@@ -1,5 +1,6 @@
 package classify.prove.doddo.libsvm_classify;
 
+import classify.prove.doddo.libsvm_classify.libsvm.svm_scale;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -11,7 +12,6 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import libsvm.*;
 
 /**
@@ -39,7 +39,7 @@ public class svm_trainTest extends TestCase {
 
     public void testMain() throws Exception {
 
-        File file = new File("/home/doddo/Desktop/libsvm-3.20/heart_scale");
+        File file = new File("/home/doddo/Desktop/libsvm-3.20/a0d0e0.scale");
         FileInputStream fileInputStream = new FileInputStream(file);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
@@ -82,37 +82,48 @@ public class svm_trainTest extends TestCase {
         svmParameter.svm_type = 0;
         svmParameter.kernel_type = 2;
         svmParameter.degree = 3;
-        svmParameter.gamma = 0.0001220703125;
+        svmParameter.gamma = 0.5;
         svmParameter.coef0 = 0;
 
         // For training only
         svmParameter.cache_size = 100;
         svmParameter.eps = 0.001;
-        svmParameter.C = 2048;
-        svmParameter.nr_weight = 0;
+        svmParameter.C = 0.125;
         svmParameter.nu = 0.5;
+        svmParameter.nr_weight = 0;
+        svmParameter.weight_label = null;
+        svmParameter.weight = null;
         svmParameter.p = 0.1;
         svmParameter.shrinking = 1;
         svmParameter.probability = 0;
 
 
-        svm_model svmModel = svm.svm_train(svmProblem, svmParameter);
-        svm.svm_save_model("/home/doddo/Desktop/model.model", svmModel);
-
+        svm_model model = svm.svm_load_model("/home/doddo/Desktop/model.model");
+        //svm_model svmModel = svm.svm_train(svmProblem, svmParameter);
+        //svm.svm_save_model("/home/doddo/Desktop/model.model", svmModel);
+        //svm.svm_cross_validation(svmProblem, svmParameter, 10, results);
+        //svm.svm_cross_validation(svmProblem, model.param, 5, results);
         for(int i = 0; i < l; i++)
         {
-            results[i] = svm.svm_predict_values(svmModel, svmProblem.x[i], b);
-            a[i] = results[i] * svmProblem.y[i];
-        }
+            results[i] = svm.svm_predict(model, svmProblem.x[i]);
+            //results[i] = svm.svm_predict(svmModel, svmProblem.x[i]);
+            //results[i] = svm.svm_predict_values(svmModel, svmProblem.x[i], b);
+            //a[i] = (results[i] * svmProblem.y[i]);
+       }
         int positive = 0;
         for(int i = 0; i < l; i++)
         {
-            if(a[i] > 0)
+           if(results[i] == svmProblem.y[i])
+            {
                 positive++;
+            }
         }
         double perc;
         perc = (double) positive / a.length;
-
+        String[] pep = new String[] {"-l", "-1", "-u", "+1",
+                "/home/doddo/Desktop/Feature_Training.txt"};
+        svm_scale svmScale = new svm_scale();
+        svm_scale.main(pep);
         Assert.assertTrue(true);
     }
 
