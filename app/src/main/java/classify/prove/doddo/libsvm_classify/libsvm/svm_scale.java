@@ -58,7 +58,7 @@ public class svm_scale
 				(value-y_min) / (y_max-y_min);
 		}
 
-		bufferedOutputStream.write((value + " ").getBytes());
+		bufferedOutputStream.write(((int)value + " ").getBytes());
 	}
 
 	private void output(int index, double value) throws IOException {
@@ -77,7 +77,7 @@ public class svm_scale
 
 		if(value != 0)
 		{
-			bufferedOutputStream.write((index + ":" + value + " ").getBytes());
+			bufferedOutputStream.write((index + ":" +  value + " ").getBytes());
 			new_num_nonzeros++;
 		}
 	}
