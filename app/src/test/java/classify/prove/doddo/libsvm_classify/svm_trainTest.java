@@ -13,15 +13,15 @@ import java.io.InputStreamReader;
 import libsvm.*;
 
 public class svm_trainTest extends TestCase {
-    static int l = 0, f = 0;
+    public static int l = 0, f = 0;
     // svm_problem needed by svm_train
-    static svm_problem svmProblem = new svm_problem();
-    static svm_parameter svmParameter = new svm_parameter();
-    static double[][]   results;
-    static double[]     percentages;
-    static int[] log_C_coef;
-    static int[] log_Gamma_coef;
-    static int[] correct;
+    public static svm_problem svmProblem = new svm_problem();
+    public static svm_parameter svmParameter = new svm_parameter();
+    public static double[][]   results;
+    public static double[]     percentages;
+    public static int[] log_C_coef;
+    public static int[] log_Gamma_coef;
+    public static int[] correct;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -59,7 +59,7 @@ public class svm_trainTest extends TestCase {
         // svm_node for indexes and values
         svmProblem.x = new svm_node[l][f + 1];
 
-        // Initializa svm_nodes in SvmProblem.x
+        // Initialize svm_nodes in SvmProblem.x
         for (int i = 0; i < svmProblem.x.length; i++) {
             for (int j = 0; j < svmProblem.x[0].length; j++) {
                 svmProblem.x[i][j] = new svm_node();
@@ -127,7 +127,6 @@ public class svm_trainTest extends TestCase {
         FileOutputStream fileOutputStream = new FileOutputStream("/home/doddo/Desktop/output.txt");
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
         String[] parameters = new String[log_C_coef.length * log_Gamma_coef.length];
-        // Replace 3 with step
         // Iterate the loop for every log2C and log2Gamma that the user wants to try
         for(int i = 0; i < log_C_coef.length; i++)
         {

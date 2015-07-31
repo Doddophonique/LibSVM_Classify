@@ -8,6 +8,16 @@ import libsvm.*;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int l = 0, f = 0;
+    // svm_problem needed by svm_train
+    public static svm_problem svmProblem = new svm_problem();
+    public static svm_parameter svmParameter = new svm_parameter();
+    public static double[][]   results;
+    public static double[]     percentages;
+    public static int[] log_C_coef;
+    public static int[] log_Gamma_coef;
+    public static int[] correct;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
