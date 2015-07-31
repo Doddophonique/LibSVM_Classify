@@ -67,8 +67,10 @@ public class svm_trainTest extends TestCase {
         }
 
         // Initialize arrays with selected values of C and Gamma
-        log_C_coef      = new int[] {-5, -2, 1, 4, 7, 10, 13};
-        log_Gamma_coef  = new int[] {2, -1, -4, -7, -10, -13};
+        //log_C_coef      = new int[] {-5, -2, 1, 4, 7, 10, 13};
+        //log_Gamma_coef  = new int[] {2, -1, -4, -7, -10, -13};
+        log_C_coef      = new int[] {-5, -2};
+        log_Gamma_coef  = new int[] {2, -1};
         results = new double[log_C_coef.length * log_Gamma_coef.length][l];
         percentages = new double[results.length];
         correct = new int[l];
@@ -134,7 +136,7 @@ public class svm_trainTest extends TestCase {
             for (int j = 0; j < log_Gamma_coef.length; j++)
             {
                 svmParameter.gamma = Math.pow(2, log_Gamma_coef[j]);
-                svm.svm_cross_validation(svmProblem, svmModel.param, 5, results[log_Gamma_coef.length * i + j]);
+                svm.svm_cross_validation(svmProblem, svmModel.param, 2, results[log_Gamma_coef.length * i + j]);
                 parameters[log_Gamma_coef.length * i + j] =
                         "log2c=" + svmParameter.C + ", log2g=" + svmParameter.gamma + ", ";
             }
@@ -184,8 +186,8 @@ public class svm_trainTest extends TestCase {
                     svmProblem.x[C][i].value = Double.valueOf(line.substring(0, line.indexOf(' ')));
                     index++;
                 }
-                svmProblem.x[C][i].index = -1;
-                svmProblem.x[C][i].value = .0;
+                //svmProblem.x[C][i].index = -1;
+                //svmProblem.x[C][i].value = .0;
             }
         }
         catch(Exception ew)

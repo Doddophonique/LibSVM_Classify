@@ -52,7 +52,7 @@ public abstract class LoadFeatureFile {
         // labels for each row
         svmProblem.y = new double[l];
         // svm_node for indexes and values
-        svmProblem.x = new svm_node[l][f + 1];
+        svmProblem.x = new svm_node[l][f];
 
         // Initialize svm_nodes in SvmProblem.x
         for (int i = 0; i < svmProblem.x.length; i++) {
@@ -89,8 +89,8 @@ public abstract class LoadFeatureFile {
                     svmProblem.x[C][i].value = Double.valueOf(line.substring(0, line.indexOf(' ')));
                     index++;
                 }
-                svmProblem.x[C][i].index = -1;
-                svmProblem.x[C][i].value = .0;
+                //svmProblem.x[C][i].index = -1;
+                //svmProblem.x[C][i].value = .0;
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,9 +1,7 @@
-import android.app.ProgressDialog;
+package classify.prove.doddo.libsvm_classify;
+
 import android.os.AsyncTask;
 
-import classify.prove.doddo.libsvm_classify.Cross_SThread;
-import classify.prove.doddo.libsvm_classify.LoadFeatureFile;
-import classify.prove.doddo.libsvm_classify.TrainSVM;
 import libsvm.svm_problem;
 
 /**
@@ -27,7 +25,15 @@ public class ModelFromFile extends AsyncTask <String, Void, Void> {
          */
 
         TrainSVM.filename = params[0];
-        Cross_SThread.filename = params[0];
+        CrossValidation.filename = params[0];
+
+        CrossValidation.cStart = -5;
+        CrossValidation.cEnd = 4;
+        CrossValidation.cStep = 3;
+
+        CrossValidation.gStart = 2;
+        CrossValidation.gEnd = -7;
+        CrossValidation.gStep = -3;
 
         try {
             svmProblem = LoadFeatureFile.load(params[0]);
@@ -35,10 +41,11 @@ public class ModelFromFile extends AsyncTask <String, Void, Void> {
             e.printStackTrace();
         }
 
+
         switch(params[1])
         {
             case("Cross"):
-                Cross_SThread.cross_validate(svmProblem);
+                CrossValidation.cross_validate(svmProblem);
                 break;
 
             case("Train"):

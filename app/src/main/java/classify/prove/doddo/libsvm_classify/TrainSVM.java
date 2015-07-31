@@ -29,8 +29,8 @@ public abstract class TrainSVM {
         filename += ".model";
 
         // Change the parameters with the desired C and Gamma
-        svmParameter.C = C;
-        svmParameter.gamma = G;
+        svmParameter.C = 0.125;
+        svmParameter.gamma = 0.5;
         // Train the SVM
         svmModel = svm.svm_train(svmProblem, svmParameter);
 
