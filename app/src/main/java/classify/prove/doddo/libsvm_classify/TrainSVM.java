@@ -15,36 +15,31 @@ import libsvm.svm_problem;
  */
 public abstract class TrainSVM {
 
-    public svm_parameter svmParameter = new svm_parameter();
-    public static double c, g;
+    static DefaultSVMParameter defaultSVMParameter;
+    static svm_parameter svmParameter;
+    static svm_model svmModel;
 
-    private static boolean initialized = false;
+    public static String filename;
+    public static double C, G;
 
-    public void train(svm_problem svmProblem)
+    public static void train(svm_problem svmProblem)
     {
+        defaultSVMParameter = new DefaultSVMParameter(LoadFeatureFile.f);
+        svmParameter = defaultSVMParameter.svmParameter;
+        filename += ".model";
 
+        // Change the parameters with the desired C and Gamma
+        svmParameter.C = C;
+        svmParameter.gamma = G;
+        // Train the SVM
+        svmModel = svm.svm_train(svmProblem, svmParameter);
 
+        try {
+            svm.svm_save_model(filename, svmModel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public TrainSVM()
-    {
-        // Default parameters
-        svmParameter.svm_type = 0;
-        svmParameter.kernel_type = 2;
-        svmParameter.degree = 3;
-        svmParameter.gamma = 1/LoadFeatureFile.f;
-        svmParameter.coef0 = 0;
 
-        // For training only
-        svmParameter.cache_size = 100;
-        svmParameter.eps = 0.001;
-        svmParameter.C = 1;
-        svmParameter.nu = 0.5;
-        svmParameter.nr_weight = 0;
-        svmParameter.weight_label = null;
-        svmParameter.weight = null;
-        svmParameter.p = 0.1;
-        svmParameter.shrinking = 1;
-        svmParameter.probability = 0;
-    }
 }

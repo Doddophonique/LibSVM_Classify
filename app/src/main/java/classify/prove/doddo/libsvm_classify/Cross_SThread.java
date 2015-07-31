@@ -13,13 +13,14 @@ import libsvm.svm_problem;
 /**
  * Created by doddo on 7/31/15.
  */
-public class Cross_SThread {
+public abstract class Cross_SThread {
 
     public static double[][]   results;
     public static double[]     percentages;
     public static int[] correct;
     public static int cStart, cEnd, cStep;
     public static int gStart, gEnd, gStep;
+    public static String filename;
 
     static int cLength;
     static int gLength;
@@ -29,11 +30,13 @@ public class Cross_SThread {
     static FileOutputStream fileOutputStream;
     static BufferedOutputStream bufferedOutputStream;
 
-    static svm_parameter svmParameter = TrainSVM.svmParameter;
+    static DefaultSVMParameter defaultSVMParameter;
+    static svm_parameter svmParameter;
 
-    public void cross_validate(svm_problem svmProblem) {
+    public static void cross_validate(svm_problem svmProblem) {
 
-        svm_model svmModel = svm.svm_train(svmProblem, svmParameter);
+        defaultSVMParameter = new DefaultSVMParameter(LoadFeatureFile.f);
+        svmParameter = defaultSVMParameter.svmParameter;
 
         // Number of step = [(End - Start) / Step] + 1
         // Valid only if the Step is adequate for starting at Start and arriving exactly at End
@@ -59,7 +62,7 @@ public class Cross_SThread {
                 svmParameter.gamma = Math.pow(2, log_Gamma_coef[j]);
                 // Do the cross validation and store the results
                 // TODO: replace 5 with the user selected number of folds
-                svm.svm_cross_validation(svmProblem, svmModel.param, 5, results[gLength * i + j]);
+                svm.svm_cross_validation(svmProblem, svmParameter, 5, results[gLength * i + j]);
                 // Store the parameters in the correct order of cross validation
                 parameters[gLength * i + j] =
                         "log2c=" + log_C_coef[i] + ", log2g=" + log_Gamma_coef[j] + ", ";
@@ -70,7 +73,7 @@ public class Cross_SThread {
         writeResultsToFile();
     }
 
-    private void initCoefficientsArrays()
+    private static void initCoefficientsArrays()
     {
         if(cLength == gLength)
         {
@@ -104,7 +107,7 @@ public class Cross_SThread {
         }
     }
 
-    private void calculatePercentages(svm_problem svmProblem)
+    private static void calculatePercentages(svm_problem svmProblem)
     {
         // For every combination of C and G
         for(int i = 0; i < cLength * gLength; i++)
@@ -120,11 +123,12 @@ public class Cross_SThread {
         }
     }
 
-    private void writeResultsToFile()
+    private static void writeResultsToFile()
     {
+        filename += ".coeff";
 
         try {
-            fileOutputStream = new FileOutputStream("/home/doddo/Desktop/output.txt");
+            fileOutputStream = new FileOutputStream(filename);
             bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
         }
         catch (FileNotFoundException e) {

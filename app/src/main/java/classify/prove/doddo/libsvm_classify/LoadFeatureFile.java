@@ -3,6 +3,7 @@ package classify.prove.doddo.libsvm_classify;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import libsvm.svm_node;
@@ -19,9 +20,9 @@ public abstract class LoadFeatureFile {
     // l = rows of the features file, f = number of features
     public static int l = 0, f = 0;
     // container for the feature file
-    public static svm_problem svmProblem = new svm_problem();
+    static svm_problem svmProblem = new svm_problem();
 
-    public void load(String filename) throws Exception
+    public static svm_problem load(String filename) throws Exception
     {
         File file = new File(filename);
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -62,9 +63,11 @@ public abstract class LoadFeatureFile {
 
         populateArray(bufferedReader);
         bufferedReader.close();
+
+        return svmProblem;
     }
 
-    private void populateArray(BufferedReader bufferedReader) {
+    private static void populateArray(BufferedReader bufferedReader) {
         try {
             for (int C = 0; C < l; C++) {
                 int i;
@@ -89,10 +92,9 @@ public abstract class LoadFeatureFile {
                 svmProblem.x[C][i].index = -1;
                 svmProblem.x[C][i].value = .0;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch(Exception ew)
-        {
 
-        }
     }
 }
