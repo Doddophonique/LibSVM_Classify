@@ -23,5 +23,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
     testCompile 'junit:junit:4.12'
-    compile files('libs/libsvm.jar')
+    compile files('libs/libsvm.jar', 'libs/jlibsvm-0.911.jar')
 }

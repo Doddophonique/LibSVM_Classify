@@ -331,6 +331,8 @@ public class svm_scale
 
 			StringTokenizer st = new StringTokenizer(line," \t\n\r\f:");
 			target = Double.parseDouble(st.nextToken());
+
+
 			output_target(target);
 			while(st.hasMoreElements())
 			{
