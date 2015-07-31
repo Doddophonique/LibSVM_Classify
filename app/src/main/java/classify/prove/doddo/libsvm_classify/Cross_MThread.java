@@ -31,8 +31,8 @@ public class Cross_MThread implements Runnable {
             for(int gParameters = 0; gParameters < CrossValidation.gLength; gParameters ++)
             {
                 svmParameter.gamma = Math.pow(2, CrossValidation.log_Gamma_coef[gParameters]);
-
-                svm.svm_cross_validation(svmProblem, svmParameter, 5, CrossValidation.results[CrossValidation.gLength * cParameters + gParameters]);
+                libsvm.svm.svm_cross_validation(svmProblem, svmParameter, 5, CrossValidation.results[CrossValidation.gLength * cParameters + gParameters]);
+                //svm.svm_cross_validation(svmProblem, svmParameter, 5, CrossValidation.results[CrossValidation.gLength * cParameters + gParameters]);
 
                 CrossValidation.parameters[CrossValidation.gLength * cParameters + gParameters] =
                         "log2c=" + CrossValidation.log_C_coef[cParameters] + ", log2g=" + CrossValidation.log_Gamma_coef[gParameters] + ", ";
