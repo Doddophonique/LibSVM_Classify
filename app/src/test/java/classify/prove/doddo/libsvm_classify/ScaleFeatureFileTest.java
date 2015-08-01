@@ -10,13 +10,15 @@ import static org.junit.Assert.*;
  */
 public class ScaleFeatureFileTest {
 
+    static String filename;
+
     @Before
     public void setUp() throws Exception {
-
+        filename = "/home/doddo/Tests/training_set_4_feature_files";
     }
 
     @Test
     public void testScale() throws Exception {
-
+        ScaleFeatureFile.Scale(filename, -1, 1);
     }
 }
