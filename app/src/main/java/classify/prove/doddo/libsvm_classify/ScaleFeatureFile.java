@@ -13,9 +13,8 @@ public abstract class ScaleFeatureFile {
      * @throws IOException
      */
     public static void Scale(String filename) throws IOException {
-        String l = "-1", u = "1";
 
-        String[] commandLine = new String[]{"-l", l, "-u", u, filename};
+        String[] commandLine = new String[]{filename};
 
         svm_scale.main(commandLine);
     }
