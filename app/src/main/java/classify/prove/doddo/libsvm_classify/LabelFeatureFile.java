@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -85,7 +86,7 @@ public abstract class LabelFeatureFile {
             mergedFileName += name;
         mergedFileName += ".unscaled";
 
-        MergeFeatureFile.MergeFiles(toBeMerged, mergedFileName);
+        MergeFile.MergeFiles(toBeMerged, mergedFileName);
     }
 
     private static String getCurrentDate()
@@ -118,5 +119,103 @@ public abstract class LabelFeatureFile {
         }
 
         return sameNamePath;
+    }
+
+    private static class MergeFile
+    {
+        /**
+         * This function is used when you want to merge multiple files with a similar filename.
+         * Each row of {@code groupOfPaths} should contain a string with one or multiple paths
+         * divided by a comma and the filenames must have a common {@code identifier}.
+         * @param groupOfPaths
+         *                  array of strings grouped by filename
+         * @param identifier
+         *                  array of strings used to identify every subgroup of {@code groupOfPaths}
+         * @throws IOException
+         */
+        protected static void MergeFiles(String[] groupOfPaths, String[] identifier) throws IOException
+        {
+            File[]          files;
+            FileWriter      fileWriter;
+            BufferedWriter  bufferedWriter;
+
+            // For each group of paths
+            for(String paths: groupOfPaths)
+            {
+                String[] path = paths.split(",");
+
+                files = new File[path.length];
+                // Initialize a file for every path
+                for(int i = 0; i < files.length; i++)
+                    files[i] = new File(path[i]);
+
+                // Whatever is inside, brackets included
+                String bracketsContent =
+                        path[0].substring(path[0].lastIndexOf("["), path[0].lastIndexOf("]") + 1);
+                // The name says it all
+                String pathWithoutBrackets = path[0].replace(bracketsContent, "");
+                // The name of the merged feature file is <speaker_name>.ff.unique
+                String mergedFile = pathWithoutBrackets.replace(".ff", ".ff.unique");
+
+                fileWriter =        new FileWriter(mergedFile);
+                bufferedWriter =    new BufferedWriter(fileWriter);
+
+                for(File file : files) {
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+                    String line;
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        bufferedWriter.write(line);
+                        bufferedWriter.newLine();
+                    }
+                }
+
+                bufferedWriter.close();
+
+            }
+        }
+
+        /**
+         * Merge together multiple files appending them one after the other. The order is determined
+         * by the order of the paths in {@code paths}.
+         * @param paths
+         *                  string of paths comma-separated
+         * @param filename
+         *                  name of the file to be saved
+         * @throws IOException
+         */
+        private static void MergeFiles(final String paths, final String filename) throws IOException {
+            File[] files;
+            FileWriter fileWriter;
+            BufferedWriter bufferedWriter;
+
+
+            String[] path = paths.split(",");
+
+            files = new File[path.length];
+            // Initialize a file for every path
+            for (int i = 0; i < files.length; i++)
+                files[i] = new File(path[i]);
+
+            fileWriter = new FileWriter(filename);
+            bufferedWriter = new BufferedWriter(fileWriter);
+
+            for (File file : files) {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    bufferedWriter.write(line);
+                    bufferedWriter.newLine();
+                }
+            }
+
+            bufferedWriter.close();
+
+        }
     }
 }
