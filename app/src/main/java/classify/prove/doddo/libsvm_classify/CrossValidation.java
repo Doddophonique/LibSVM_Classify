@@ -29,7 +29,7 @@ public abstract class CrossValidation {
     static FileOutputStream fileOutputStream;
     static BufferedOutputStream bufferedOutputStream;
 
-
+    // TODO: save the higher percentage and train with related parameters if default training is selected
     public static void cross_validate(svm_problem svmProblem) {
 
         // Number of step = [(End - Start) / Step] + 1
