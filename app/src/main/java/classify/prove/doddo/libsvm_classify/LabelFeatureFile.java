@@ -1,9 +1,5 @@
 package classify.prove.doddo.libsvm_classify;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *  Abstract class that labels feature files with keys provided by the user or
  *  obtained from the filename
@@ -11,7 +7,7 @@ import java.util.Map;
 
 public abstract class LabelFeatureFile {
 
-
+    static String[] names;
     /**
      * This function is called when the labelling is performed on .ff files created by the application
      * @param params Array containing paths of the files to be labeled

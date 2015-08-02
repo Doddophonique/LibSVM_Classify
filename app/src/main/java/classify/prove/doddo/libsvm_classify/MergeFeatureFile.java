@@ -64,14 +64,14 @@ public abstract class MergeFeatureFile {
 
     }
 
-    private static String[] MergeFiles(String... sameNamePath) throws IOException
+    private static String[] MergeFiles(String... groupOfPaths) throws IOException
     {
         File[]          files;
         FileWriter      fileWriter;
         BufferedWriter  bufferedWriter;
 
         // For each group of paths
-        for(String paths: sameNamePath)
+        for(String paths: groupOfPaths)
         {
             String[] path = paths.split(",");
 
@@ -80,14 +80,23 @@ public abstract class MergeFeatureFile {
             for(int i = 0; i < files.length; i++)
                 files[i] = new File(path[i]);
 
-            // Whatever is inside, brackets included
-            String bracketsContent =
-                    path[0].substring(path[0].lastIndexOf("["), path[0].lastIndexOf("]") + 1);
-            // The name says it all
-            String pathWithoutBrackets = path[0].replace(bracketsContent, "");
-            // The name of the merged feature file is <speaker_name>.ff.unique
-            String mergedFile = pathWithoutBrackets.replace(".ff", ".ff.unique");
+            String mergedFile;
 
+            if(groupOfPaths.length != 1) {
+                // Whatever is inside, brackets included
+                String bracketsContent =
+                        path[0].substring(path[0].lastIndexOf("["), path[0].lastIndexOf("]") + 1);
+                // The name says it all
+                String pathWithoutBrackets = path[0].replace(bracketsContent, "");
+                // The name of the merged feature file is <speaker_name>.ff.unique
+                mergedFile = pathWithoutBrackets.replace(".ff", ".ff.unique");
+            }
+            else {
+                String onlyPath =
+                        path[0].substring(0, path[0].lastIndexOf("/") + 1);
+                // The name of the merged feature file is <speaker_name>.ff.unique
+                mergedFile = onlyPath + files.length + "_feature_files.ff.unique";
+            }
             fileWriter =        new FileWriter(mergedFile);
             bufferedWriter =    new BufferedWriter(fileWriter);
 
@@ -113,10 +122,31 @@ public abstract class MergeFeatureFile {
     /**
      * After labeling, call this function to combine together the labeled feature files
      * @param params paths to labeled feature files
+     * @param names ordered names provided by LabelFeatureFile
      */
-    public static void JoinLabeledFiles(String... params)
+    public static void JoinLabeledFiles(String[] params, String[] names)
     {
+        String uniquePath = "";
 
+        // For each name
+        for(String name: names)
+        {
+            // For each feature file
+            for(String filepath: params)
+            {
+                if(filepath.contains(name))
+                {
+                    // Prepare the array of files that have to be joined
+                    uniquePath += filepath + ",";
+                }
+            }
+        }
+
+        try {
+            MergeFiles(uniquePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
