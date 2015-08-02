@@ -22,9 +22,11 @@ public abstract class LabelFeatureFile {
     static String[] names;
     /**
      * This function is called when the labelling is performed on .ff files created by the application
-     * @param params Array containing paths of the files to be labeled
+     * @param params    an array containing paths of the files to be labeled
+     *
+     * @return          path to the merged file
      */
-    public static void label(String[] params) throws Exception
+    public static String label(String[] params) throws Exception
     {
         // TODO: replace this line with names selected
         names = new String[]{"Andrea", "Davide", "Emanuele"};
@@ -41,8 +43,6 @@ public abstract class LabelFeatureFile {
             File[] files;
             FileWriter fileWriter;
             BufferedWriter bufferedWriter;
-
-            //String[] path = sameNamePath[i].split(",");
 
             files = new File[path[i].length];
             // Initialize a file for every path
@@ -86,7 +86,7 @@ public abstract class LabelFeatureFile {
             mergedFileName += name;
         mergedFileName += ".unscaled";
 
-        MergeFile.MergeFiles(toBeMerged, mergedFileName);
+        return MergeFile.mergeFiles(toBeMerged, mergedFileName);
     }
 
     private static String getCurrentDate()
@@ -131,31 +131,32 @@ public abstract class LabelFeatureFile {
          *                  array of strings grouped by filename
          * @param identifier
          *                  array of strings used to identify every subgroup of {@code groupOfPaths}
+         *
+         * @return          An array of paths: each one of them points to one merged file
          * @throws IOException
          */
-        protected static void MergeFiles(String[] groupOfPaths, String[] identifier) throws IOException
+        protected static String[] mergeFiles(final String[] groupOfPaths, final String[] identifier) throws IOException
         {
             File[]          files;
             FileWriter      fileWriter;
             BufferedWriter  bufferedWriter;
 
+            String[] newPaths = new String[identifier.length];
+
             // For each group of paths
-            for(String paths: groupOfPaths)
+            for(int i = 0; i < groupOfPaths.length; i++)
             {
-                String[] path = paths.split(",");
+                String[] path = groupOfPaths[0].split(",");
 
                 files = new File[path.length];
                 // Initialize a file for every path
-                for(int i = 0; i < files.length; i++)
-                    files[i] = new File(path[i]);
+                for(int j = 0; j < files.length; j++)
+                    files[j] = new File(path[j]);
 
-                // Whatever is inside, brackets included
-                String bracketsContent =
-                        path[0].substring(path[0].lastIndexOf("["), path[0].lastIndexOf("]") + 1);
-                // The name says it all
-                String pathWithoutBrackets = path[0].replace(bracketsContent, "");
-                // The name of the merged feature file is <speaker_name>.ff.unique
-                String mergedFile = pathWithoutBrackets.replace(".ff", ".ff.unique");
+                String mergedFile =
+                        path[0].substring(0, path[0].lastIndexOf('/')) + identifier[i] + ".merged";
+
+                newPaths[i] = mergedFile;
 
                 fileWriter =        new FileWriter(mergedFile);
                 bufferedWriter =    new BufferedWriter(fileWriter);
@@ -175,6 +176,8 @@ public abstract class LabelFeatureFile {
                 bufferedWriter.close();
 
             }
+
+            return newPaths;
         }
 
         /**
@@ -184,9 +187,11 @@ public abstract class LabelFeatureFile {
          *                  string of paths comma-separated
          * @param filename
          *                  name of the file to be saved
+         *
+         * @return          A string with the path to the merged file
          * @throws IOException
          */
-        private static void MergeFiles(final String paths, final String filename) throws IOException {
+        private static String mergeFiles(final String paths, final String filename) throws IOException {
             File[] files;
             FileWriter fileWriter;
             BufferedWriter bufferedWriter;
@@ -216,6 +221,7 @@ public abstract class LabelFeatureFile {
 
             bufferedWriter.close();
 
+            return filename;
         }
     }
 }
