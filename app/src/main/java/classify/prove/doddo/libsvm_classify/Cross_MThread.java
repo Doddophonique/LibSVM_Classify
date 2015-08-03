@@ -5,9 +5,6 @@ import libsvm.svm;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
 
-/**
- * Created by doddo on 7/31/15.
- */
 public class Cross_MThread implements Runnable {
 
     private int threadNum;

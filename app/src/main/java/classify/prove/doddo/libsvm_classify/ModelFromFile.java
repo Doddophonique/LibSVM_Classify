@@ -4,9 +4,6 @@ import android.os.AsyncTask;
 
 import libsvm.svm_problem;
 
-/**
- * Created by doddo on 7/31/15.
- */
 public class ModelFromFile extends AsyncTask <String, Void, Void> {
 
     static svm_problem svmProblem;

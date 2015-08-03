@@ -7,9 +7,6 @@ import java.io.IOException;
 
 import libsvm.svm_problem;
 
-/**
- * Created by doddo on 7/31/15.
- */
 public abstract class CrossValidation {
 
     public static double[][]   results;

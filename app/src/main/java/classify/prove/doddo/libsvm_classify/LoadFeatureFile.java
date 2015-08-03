@@ -10,9 +10,6 @@ import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
 
-/**
- * Created by doddo on 7/31/15.
- */
 /* TODO: modify the class in order to accept an array of files, label them and join them in one single file */
 
 public abstract class LoadFeatureFile {

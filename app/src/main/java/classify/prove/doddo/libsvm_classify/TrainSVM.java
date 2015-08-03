@@ -10,9 +10,6 @@ import libsvm.svm_model;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
 
-/**
- * Created by doddo on 7/31/15.
- */
 public abstract class TrainSVM {
 
     static DefaultSVMParameter defaultSVMParameter;

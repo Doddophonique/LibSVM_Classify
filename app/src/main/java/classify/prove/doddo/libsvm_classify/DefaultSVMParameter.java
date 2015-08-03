@@ -2,9 +2,6 @@ package classify.prove.doddo.libsvm_classify;
 
 import libsvm.svm_parameter;
 
-/**
- * Created by doddo on 7/31/15.
- */
 public class DefaultSVMParameter {
 
     public svm_parameter svmParameter = new svm_parameter();
