@@ -68,7 +68,7 @@ public abstract class LabelFeatureFile {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
                 String line;
-
+                // TODO: write chuncks instead of lines
                 while ((line = bufferedReader.readLine()) != null) {
                     bufferedWriter.write(i + " " + line);
                     bufferedWriter.newLine();
