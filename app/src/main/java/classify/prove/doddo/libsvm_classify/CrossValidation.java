@@ -32,8 +32,7 @@ public abstract class CrossValidation {
 
     private static BufferedOutputStream bufferedOutputStream;
 
-    private static long startWrite;
-    private static long endWrite;
+
 
     public static void cross_validate(svm_problem svmProblem) {
 
@@ -80,11 +79,7 @@ public abstract class CrossValidation {
         }
 
         calculatePercentages(svmProblem);
-        startWrite = System.nanoTime();
         writeResultsToFile();
-        endWrite = System.nanoTime();
-
-        System.out.println(endWrite - startWrite);
     }
 
     private static void initCoefficientsArrays()
