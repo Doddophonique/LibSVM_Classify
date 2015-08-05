@@ -168,31 +168,8 @@ public abstract class LabelFeatureFile {
 
                 newPaths[i] = mergedFile;
 
-                fileOutputStream = new FileOutputStream(mergedFile);
-                bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-
-                for (File file : files) {
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-
-                    int chunkSize = 8192;
-                    byte[] line = new byte[chunkSize];
-                    long iterations = file.length() / chunkSize;
-                    int remainder = (int) file.length() % chunkSize;
-
-                    for (int C = 0; C < iterations; C++) {
-                        bufferedInputStream.read(line);
-                        bufferedOutputStream.write(line);
-                    }
-                    line = new byte[remainder];
-                    bufferedInputStream.read(line);
-                    bufferedOutputStream.write(line);
-                }
-
-
-                bufferedOutputStream.close();
+                merge(files, mergedFile);
             }
-
             return newPaths;
         }
 
@@ -209,8 +186,6 @@ public abstract class LabelFeatureFile {
          */
         private static String mergeFiles(final String paths, final String filename) throws IOException {
             File[] files;
-            FileOutputStream fileOutputStream;
-            BufferedOutputStream bufferedOutputStream;
 
             String[] path = paths.split(",");
 
@@ -219,8 +194,15 @@ public abstract class LabelFeatureFile {
             for (int i = 0; i < files.length; i++)
                 files[i] = new File(path[i]);
 
-            fileOutputStream = new FileOutputStream(filename);
-            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            merge(files, filename);
+
+            return filename;
+        }
+
+        private static void merge(File[] files, String outFilename) throws IOException
+        {
+            FileOutputStream fileOutputStream = new FileOutputStream(outFilename);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
 
             for (File file : files) {
                 FileInputStream fileInputStream = new FileInputStream(file);
@@ -243,8 +225,6 @@ public abstract class LabelFeatureFile {
 
 
             bufferedOutputStream.close();
-
-            return filename;
         }
     }
 }
