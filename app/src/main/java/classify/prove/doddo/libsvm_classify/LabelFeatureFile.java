@@ -23,8 +23,6 @@ import java.util.Locale;
 public abstract class LabelFeatureFile {
 
     static String[] names;
-    private static long startWrite;
-    private static long endWrite;
     /**
      * This function is called when the labelling is performed on .ff files created by the application
      * @param params    an array containing paths of the files to be labeled
@@ -91,11 +89,7 @@ public abstract class LabelFeatureFile {
             mergedFileName += name;
         mergedFileName += ".unscaled";
 
-        startWrite = System.nanoTime();
         MergeFile.mergeFiles(toBeMerged, mergedFileName);
-        endWrite = System.nanoTime();
-
-        System.out.println("\n\n\n Time elapsed: " + (endWrite - startWrite));
 
         return null;
     }
