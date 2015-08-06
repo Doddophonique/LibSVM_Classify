@@ -1,15 +1,20 @@
 package classify.prove.doddo.libsvm_classify;
 
+import android.database.CharArrayBuffer;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.CharBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +28,7 @@ import java.util.Locale;
 public abstract class LabelFeatureFile {
 
     static String[] names;
+    static long startTime, endTime;
     /**
      * This function is called when the labelling is performed on .ff files created by the application
      * @param params    an array containing paths of the files to be labeled
@@ -66,21 +72,56 @@ public abstract class LabelFeatureFile {
             fileWriter = new FileWriter(mergedFile);
             bufferedWriter = new BufferedWriter(fileWriter);
 
+            startTime = System.nanoTime();
+
             for (File file : files) {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
-                String line;
-                // TODO: write chuncks instead of lines
-                while ((line = bufferedReader.readLine()) != null) {
-                    bufferedWriter.write(i + " " + line);
-                    bufferedWriter.newLine();
+                char[] line = new char[(int) file.length()];
+                int chunkSize = 8192;
+                int iterations = (int)file.length() / chunkSize;
+                int remainder = (int) file.length() % chunkSize;
+                int index = 0;
+
+                for(int C = 0; C < iterations; C++)
+                {
+                    bufferedReader.read(line, C * chunkSize, chunkSize);
                 }
+                bufferedReader.read(line, iterations * chunkSize, remainder);
+
+                StringBuilder st = new StringBuilder();
+                st.append(line);
+
+                do {
+                    st.insert(index, i + " ");
+                    index = st.indexOf("\n", index + 2) + 1;
+                }
+                while(index != st.lastIndexOf("\n") + 1);
+
+                line = new char[st.length()];
+                CharArrayWriter charArrayWriter = new CharArrayWriter(st.length());
+                charArrayWriter.append(st);
+                line = charArrayWriter.toCharArray();
+                iterations = line.length / chunkSize;
+                remainder = line.length % chunkSize;
+
+                for(int C = 0; C < iterations; C++)
+                {
+                    bufferedWriter.write(line, C * chunkSize, chunkSize);
+                }
+                bufferedWriter.write(line, (iterations * chunkSize), remainder);
+                bufferedWriter.flush();
             }
+
+            endTime = System.nanoTime();
 
             bufferedWriter.close();
 
+
         }
+
+        System.out.println("\n\n\n Time elapsed: " + (endTime - startTime));
 
         // Constructing the filename
         String mergedFileName = path[0][0].substring(0, path[0][0].lastIndexOf('/') + 1);
