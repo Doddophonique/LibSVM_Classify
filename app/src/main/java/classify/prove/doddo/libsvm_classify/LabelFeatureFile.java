@@ -74,10 +74,19 @@ public abstract class LabelFeatureFile {
 
             startTime = System.nanoTime();
 
+// Using line-by-line reading/writing
             for (File file : files) {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    bufferedWriter.write(i + " " + line);
+                    bufferedWriter.newLine();
+                }
+            }
+// Using chunk-by-chunk reading/writing
+/*
                 char[] line = new char[(int) file.length()];
                 int chunkSize = 8192;
                 int iterations = (int)file.length() / chunkSize;
@@ -99,25 +108,22 @@ public abstract class LabelFeatureFile {
                 }
                 while(index != st.lastIndexOf("\n") + 1);
 
-                line = new char[st.length()];
-                CharArrayWriter charArrayWriter = new CharArrayWriter(st.length());
-                charArrayWriter.append(st);
-                line = charArrayWriter.toCharArray();
-                iterations = line.length / chunkSize;
-                remainder = line.length % chunkSize;
+                String string = st.toString();
+                iterations = string.length() / chunkSize;
+                remainder = string.length() % chunkSize;
 
                 for(int C = 0; C < iterations; C++)
                 {
-                    bufferedWriter.write(line, C * chunkSize, chunkSize);
+                    bufferedWriter.write(string, C * chunkSize, chunkSize);
                 }
-                bufferedWriter.write(line, (iterations * chunkSize), remainder);
+                bufferedWriter.write(string, (iterations * chunkSize), remainder);
                 bufferedWriter.flush();
             }
 
             endTime = System.nanoTime();
+*/
 
             bufferedWriter.close();
-
 
         }
 
@@ -184,8 +190,6 @@ public abstract class LabelFeatureFile {
         protected static String[] mergeFiles(final String[] groupOfPaths, final String[] identifier) throws IOException
         {
             File[]          files;
-            FileOutputStream fileOutputStream;
-            BufferedOutputStream bufferedOutputStream;
 
             String[] newPaths = new String[identifier.length];
 
