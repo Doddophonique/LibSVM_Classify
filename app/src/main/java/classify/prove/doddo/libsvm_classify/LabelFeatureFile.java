@@ -1,20 +1,16 @@
 package classify.prove.doddo.libsvm_classify;
 
-import android.database.CharArrayBuffer;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.CharBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +34,7 @@ public abstract class LabelFeatureFile {
     public static String label(String[] params) throws Exception
     {
         // TODO: replace this line with names selected
-        names = new String[]{"Andrea", "Davide", "Emanuele"};
+        names = new String[]{"Andrea"}; //, "Davide", "Emanuele"};
 
         String[] sameNamePath = groupFilesByName(params);
         String toBeMerged = "";
@@ -75,18 +71,25 @@ public abstract class LabelFeatureFile {
             startTime = System.nanoTime();
 
 // Using line-by-line reading/writing
+
             for (File file : files) {
                 FileInputStream fileInputStream = new FileInputStream(file);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
                 String line;
+
                 while ((line = bufferedReader.readLine()) != null) {
                     bufferedWriter.write(i + " " + line);
                     bufferedWriter.newLine();
                 }
             }
-// Using chunk-by-chunk reading/writing
+
+            // Using chunk-by-chunk reading/writing
 /*
+            for (File file : files) {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+
                 char[] line = new char[(int) file.length()];
                 int chunkSize = 8192;
                 int iterations = (int)file.length() / chunkSize;
@@ -119,12 +122,11 @@ public abstract class LabelFeatureFile {
                 bufferedWriter.write(string, (iterations * chunkSize), remainder);
                 bufferedWriter.flush();
             }
-
-            endTime = System.nanoTime();
 */
 
-            bufferedWriter.close();
 
+            bufferedWriter.close();
+            endTime = System.nanoTime();
         }
 
         System.out.println("\n\n\n Time elapsed: " + (endTime - startTime));
